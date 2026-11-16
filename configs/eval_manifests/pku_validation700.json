@@ -1,0 +1,17 @@
+{
+  "manifest_schema_version": 1,
+  "dataset_name": "PKU-Alignment/PKU-SafeRLHF-10K-safer",
+  "dataset_revision": "c8ee87634695ae44c5fa9bcdc5f1a5e7c5ae8e47",
+  "source_split": "validation",
+  "source_split_rule": "train_test_split(test_size=0.1, seed=0)['test']",
+  "expected_source_split_rows": 1000,
+  "selection_rule": "first_700_rows",
+  "expected_selected_rows": 700,
+  "expected_unique_raw_prompts": 665,
+  "prompt_template_id": "beavertails_conversation_v1",
+  "hash_algorithm": "sha256",
+  "digest_canonicalization": "utf8(value) prefixed by unsigned 8-byte big-endian byte length, concatenated in order",
+  "ordered_raw_prompt_sha256": "207666651f1ef0eab04bf041645f0e154c1b1e2d034a56c10da25e6346fcfbf6",
+  "source_row_identifier": "zero-based row index in the derived validation split before selection, written as an unpadded base-10 integer",
+  "ordered_source_row_identifier_sha256": "a58ac74b1acc7d12ebb2314216fc776302e7709642a92c35da7ad7139ffb1b21"
+}

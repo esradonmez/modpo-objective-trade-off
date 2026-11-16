@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "bootstrap": {
+    "numpy_version": "1.26.4",
+    "seed": 1000,
+    "resamples": 10000,
+    "interval_quantiles": [0.025, 0.975],
+    "quantile_method": "linear"
+  },
+  "objective_comparison_order": [
+    "helpsteer:correctness_2048",
+    "helpsteer:correctness_512",
+    "helpsteer:coherence_2048",
+    "helpsteer:coherence_512",
+    "helpsteer:verbosity_lower_2048",
+    "helpsteer:verbosity_lower_512",
+    "helpsteer:complexity_2048",
+    "helpsteer:complexity_512",
+    "ultrafeedback:honesty_2048",
+    "ultrafeedback:honesty_512",
+    "ultrafeedback:instruction_following_2048",
+    "ultrafeedback:instruction_following_512",
+    "ultrafeedback:truthfulness_2048",
+    "ultrafeedback:truthfulness_512",
+    "helpsteer:verbosity_higher_512",
+    "helpsteer:verbosity_higher_2048",
+    "ultrafeedback:instruction_following_non_conflict_512",
+    "ultrafeedback:instruction_following_conflict_512",
+    "ultrafeedback:instruction_following_joint_512",
+    "helpsteer:verbosity_lower_non_conflict_512",
+    "helpsteer:verbosity_lower_conflict_512",
+    "helpsteer:verbosity_lower_joint_512",
+    "helpsteer:verbosity_lower_non_conflict_2048",
+    "helpsteer:verbosity_lower_conflict_2048",
+    "helpsteer:verbosity_lower_joint_2048"
+  ],
+  "objective_studies": {
+    "helpsteer": {
+      "config": "configs/objective_pairs/helpsteer.json",
+      "expected_rows": 400,
+      "expected_unique_raw_prompts": 400,
+      "helpfulness_score_key": "armorm_helpsteer-helpfulness",
+      "target_score_keys": {
+        "correctness": "armorm_helpsteer-correctness",
+        "coherence": "armorm_helpsteer-coherence",
+        "complexity": "armorm_helpsteer-complexity",
+        "verbosity": "armorm_helpsteer-verbosity"
+      },
+      "score_path_pattern": "objective/helpsteer/{profile}/{condition}/w{weight}/scores_armorm.jsonl",
+      "sft_score_paths": {
+        "primary": {
+          "512": "objective/helpsteer/primary/sft_512/scores_armorm.jsonl",
+          "2048": "objective/helpsteer/primary/sft_2048/scores_armorm.jsonl"
+        },
+        "robustness_2048": {
+          "2048": "objective/helpsteer/robustness_2048/sft_2048/scores_armorm.jsonl"
+        }
+      },
+      "dataset_correlation_expected_rows": {
+        "correctness": 37120,
+        "coherence": 37120,
+        "complexity": 37120,
+        "verbosity": 37120
+      }
+    },
+    "ultrafeedback": {
+      "config": "configs/objective_pairs/ultrafeedback.json",
+      "expected_rows": 400,
+      "expected_unique_raw_prompts": 400,
+      "helpfulness_score_key": "armorm_ultrafeedback-helpfulness",
+      "target_score_keys": {
+        "honesty": "armorm_ultrafeedback-honesty",
+        "instruction_following": "armorm_ultrafeedback-instruction_following",
+        "truthfulness": "armorm_ultrafeedback-truthfulness"
+      },
+      "score_path_pattern": "objective/ultrafeedback/{profile}/{condition}/w{weight}/scores_armorm.jsonl",
+      "sft_score_paths": {
+        "primary": {
+          "512": "objective/ultrafeedback/primary/sft_512/scores_armorm.jsonl",
+          "2048": "objective/ultrafeedback/primary/sft_2048/scores_armorm.jsonl"
+        },
+        "robustness_2048": {
+          "2048": "objective/ultrafeedback/robustness_2048/sft_2048/scores_armorm.jsonl"
+        }
+      },
+      "dataset_correlation_expected_rows": {
+        "honesty": 242143,
+        "instruction_following": 255862,
+        "truthfulness": 255864
+      }
+    }
+  },
+  "pku": {
+    "expected_rows": 700,
+    "expected_unique_raw_prompts": 665,
+    "score_keys": ["reward", "cost"],
+    "dataset": {
+      "name": "PKU-Alignment/PKU-SafeRLHF-10K",
+      "revision": "c8ee87634695ae44c5fa9bcdc5f1a5e7c5ae8e47"
+    },
+    "base_model": {
+      "name": "PKU-Alignment/alpaca-7b-reproduced",
+      "revision": "f4f1d993c68a98b2f953bb87208992eab221d1dc"
+    },
+    "reward_model": {
+      "name": "PKU-Alignment/beaver-7b-v1.0-reward",
+      "revision": "375cd6a9f0d7e339d2199b05ba129a4a8906596d"
+    },
+    "cost_model": {
+      "name": "PKU-Alignment/beaver-7b-v1.0-cost",
+      "revision": "c1bd343d2ddc2cb810bd736563c7ad0bf38f6b28"
+    },
+    "targets": [
+      {
+        "target_weight": 0.1,
+        "direct": {"trained_weight": 0.1, "path": "pku/direct/w0.1/raw.jsonl"},
+        "fine_nearest": {"trained_weight": 0.0, "path": "pku/fine/w0.0/raw.jsonl"},
+        "coarse_nearest": {"trained_weight": 0.0, "path": "pku/fine/w0.0/raw.jsonl"},
+        "interpolated": {"lower_weight": 0.0, "upper_weight": 0.2, "alpha": 0.5, "path": "pku/interpolated/w0.1/raw.jsonl"},
+        "lower_neighbor": {"trained_weight": 0.0, "path": "pku/fine/w0.0/raw.jsonl"},
+        "upper_neighbor": {"trained_weight": 0.2, "path": "pku/fine/w0.2/raw.jsonl"}
+      },
+      {
+        "target_weight": 0.3,
+        "direct": {"trained_weight": 0.3, "path": "pku/direct/w0.3/raw.jsonl"},
+        "fine_nearest": {"trained_weight": 0.2, "path": "pku/fine/w0.2/raw.jsonl"},
+        "coarse_nearest": {"trained_weight": 0.5, "path": "pku/coarse/w0.5/raw.jsonl"},
+        "interpolated": {"lower_weight": 0.2, "upper_weight": 0.4, "alpha": 0.5, "path": "pku/interpolated/w0.3/raw.jsonl"},
+        "lower_neighbor": {"trained_weight": 0.2, "path": "pku/fine/w0.2/raw.jsonl"},
+        "upper_neighbor": {"trained_weight": 0.4, "path": "pku/fine/w0.4/raw.jsonl"}
+      },
+      {
+        "target_weight": 0.5,
+        "direct": {"trained_weight": 0.5, "path": "pku/coarse/w0.5/raw.jsonl"},
+        "fine_nearest": {"trained_weight": 0.4, "path": "pku/fine/w0.4/raw.jsonl"},
+        "coarse_nearest": {"trained_weight": 0.5, "path": "pku/coarse/w0.5/raw.jsonl"},
+        "interpolated": {"lower_weight": 0.4, "upper_weight": 0.6, "alpha": 0.5, "path": "pku/interpolated/w0.5/raw.jsonl"},
+        "lower_neighbor": {"trained_weight": 0.4, "path": "pku/fine/w0.4/raw.jsonl"},
+        "upper_neighbor": {"trained_weight": 0.6, "path": "pku/fine/w0.6/raw.jsonl"}
+      },
+      {
+        "target_weight": 0.7,
+        "direct": {"trained_weight": 0.7, "path": "pku/direct/w0.7/raw.jsonl"},
+        "fine_nearest": {"trained_weight": 0.6, "path": "pku/fine/w0.6/raw.jsonl"},
+        "coarse_nearest": {"trained_weight": 0.5, "path": "pku/coarse/w0.5/raw.jsonl"},
+        "interpolated": {"lower_weight": 0.6, "upper_weight": 0.8, "alpha": 0.5, "path": "pku/interpolated/w0.7/raw.jsonl"},
+        "lower_neighbor": {"trained_weight": 0.6, "path": "pku/fine/w0.6/raw.jsonl"},
+        "upper_neighbor": {"trained_weight": 0.8, "path": "pku/fine/w0.8/raw.jsonl"}
+      },
+      {
+        "target_weight": 0.9,
+        "direct": {"trained_weight": 0.9, "path": "pku/direct/w0.9/raw.jsonl"},
+        "fine_nearest": {"trained_weight": 0.8, "path": "pku/fine/w0.8/raw.jsonl"},
+        "coarse_nearest": {"trained_weight": 1.0, "path": "pku/fine/w1.0/raw.jsonl"},
+        "interpolated": {"lower_weight": 0.8, "upper_weight": 1.0, "alpha": 0.5, "path": "pku/interpolated/w0.9/raw.jsonl"},
+        "lower_neighbor": {"trained_weight": 0.8, "path": "pku/fine/w0.8/raw.jsonl"},
+        "upper_neighbor": {"trained_weight": 1.0, "path": "pku/fine/w1.0/raw.jsonl"}
+      }
+    ]
+  }
+}

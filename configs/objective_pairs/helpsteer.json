@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "study": "helpsteer",
+  "base_model": {
+    "name": "meta-llama/Llama-2-7b-hf",
+    "revision": "01c7f73d771dfac7d292323805ebc428287df4f9"
+  },
+  "dataset": {
+    "name": "nvidia/HelpSteer",
+    "revision": "3ca5d59c1bc1080af195b4254e7407db60b6f450",
+    "sft_view": "nvidia/HelpSteer-pairwise-helpfulness",
+    "modpo_view": "nvidia/HelpSteer-pairwise-helpfulness",
+    "evaluation_view": "nvidia/HelpSteer"
+  },
+  "prompt_template": "\n\nHuman:\n{raw_prompt}\n\nAssistant:\n",
+  "weight_semantics": {
+    "w": "helpfulness",
+    "one_minus_w": "second_objective"
+  },
+  "training": {
+    "seed": 303,
+    "num_proc": 1,
+    "learning_rate": 0.0001,
+    "beta": 0.1,
+    "lr_scheduler_type": "cosine",
+    "warmup_steps": 0.1,
+    "weight_decay": 0.05,
+    "per_device_train_batch_size": 1,
+    "per_device_eval_batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "gradient_checkpointing": true,
+    "precision": "bf16",
+    "generate_during_eval": false,
+    "logging_steps": 10,
+    "save_steps": 200,
+    "eval_steps": 200,
+    "save_total_limit": 5,
+    "load_best_model_at_end": true,
+    "sft_max_steps": 1000,
+    "dpo_max_steps": 1000,
+    "modpo_max_steps": 1000,
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": ["q_proj", "v_proj"]
+    }
+  },
+  "generation": {
+    "manifest": "configs/eval_manifests/helpsteer_clean400.json",
+    "seed": 0,
+    "max_length": 4096,
+    "max_input_length": 1536,
+    "max_new_tokens": 2560,
+    "robustness_conditions": [
+      "correctness_2048",
+      "coherence_2048",
+      "complexity_2048",
+      "verbosity_lower_2048",
+      "verbosity_higher_2048"
+    ]
+  },
+  "evaluator": {
+    "name": "RLHFlow/ArmoRM-Llama3-8B-v0.1",
+    "revision": "eb2676d20da2f2d41082289d23c59b9f7427f955",
+    "max_length": 4096,
+    "attn_implementation": "sdpa"
+  },
+  "conditions": {
+    "correctness_512": {
+      "second_objective": "correctness",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-correctness",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "correctness_2048": {
+      "second_objective": "correctness",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-correctness",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8]
+    },
+    "coherence_512": {
+      "second_objective": "coherence",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-coherence",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "coherence_2048": {
+      "second_objective": "coherence",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-coherence",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8]
+    },
+    "complexity_512": {
+      "second_objective": "complexity",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-complexity",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "complexity_2048": {
+      "second_objective": "complexity",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-complexity",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8]
+    },
+    "verbosity_lower_512": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "verbosity_lower_2048": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "verbosity_higher_512": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "verbosity_higher_2048": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "verbosity_lower_joint_512": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity-joint-with-helpfulness",
+      "pair_selection": "joint",
+      "max_length": 512,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    },
+    "verbosity_lower_non_conflict_512": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity-agreement-with-helpfulness",
+      "pair_selection": "non_conflict",
+      "max_length": 512,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    },
+    "verbosity_lower_conflict_512": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity-conflict-with-helpfulness",
+      "pair_selection": "conflict",
+      "max_length": 512,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    },
+    "verbosity_lower_joint_2048": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity-joint-with-helpfulness",
+      "pair_selection": "joint",
+      "max_length": 2048,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    },
+    "verbosity_lower_non_conflict_2048": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity-agreement-with-helpfulness",
+      "pair_selection": "non_conflict",
+      "max_length": 2048,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    },
+    "verbosity_lower_conflict_2048": {
+      "second_objective": "verbosity",
+      "second_objective_score_direction": "lower",
+      "margin_dataset_view": "nvidia/HelpSteer-pairwise-verbosity-conflict-with-helpfulness",
+      "pair_selection": "conflict",
+      "max_length": 2048,
+      "margin_beta": -0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "study": "ultrafeedback",
+  "base_model": {
+    "name": "PKU-Alignment/alpaca-7b-reproduced",
+    "revision": "f4f1d993c68a98b2f953bb87208992eab221d1dc"
+  },
+  "dataset": {
+    "name": "OpenBMB/UltraFeedback",
+    "revision": "40b436560ca83a8dba36114c22ab3c66e43f6d5e",
+    "sft_view": "OpenBMB/UltraFeedback-helpfulness",
+    "modpo_view": "OpenBMB/UltraFeedback-helpfulness",
+    "evaluation_view": "OpenBMB/UltraFeedback-helpfulness"
+  },
+  "prompt_template": "\n\nHuman:\n{raw_prompt}\n\nAssistant:\n",
+  "weight_semantics": {
+    "w": "helpfulness",
+    "one_minus_w": "second_objective"
+  },
+  "training": {
+    "seed": 303,
+    "split_seed": 0,
+    "num_proc": 1,
+    "learning_rate": 0.0001,
+    "beta": 0.1,
+    "lr_scheduler_type": "cosine",
+    "warmup_steps": 0.1,
+    "weight_decay": 0.05,
+    "per_device_train_batch_size": 1,
+    "per_device_eval_batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "gradient_checkpointing": true,
+    "precision": "bf16",
+    "generate_during_eval": false,
+    "logging_steps": 10,
+    "save_steps": 200,
+    "eval_steps": 200,
+    "save_total_limit": 5,
+    "load_best_model_at_end": true,
+    "sft_max_steps": 300,
+    "dpo_max_steps": 300,
+    "modpo_max_steps": 400,
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": ["q_proj", "v_proj"]
+    }
+  },
+  "generation": {
+    "manifest": "configs/eval_manifests/ultrafeedback_clean400.json",
+    "seed": 0,
+    "max_length": 4096,
+    "max_input_length": 1536,
+    "max_new_tokens": 2560,
+    "robustness_conditions": [
+      "honesty_2048",
+      "instruction_following_2048",
+      "truthfulness_2048"
+    ]
+  },
+  "evaluator": {
+    "name": "RLHFlow/ArmoRM-Llama3-8B-v0.1",
+    "revision": "eb2676d20da2f2d41082289d23c59b9f7427f955",
+    "max_length": 4096,
+    "attn_implementation": "sdpa"
+  },
+  "conditions": {
+    "honesty_512": {
+      "second_objective": "honesty",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-honesty",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "honesty_2048": {
+      "second_objective": "honesty",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-honesty",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8]
+    },
+    "instruction_following_512": {
+      "second_objective": "instruction_following",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-instruction_following",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "instruction_following_2048": {
+      "second_objective": "instruction_following",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-instruction_following",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.9]
+    },
+    "truthfulness_512": {
+      "second_objective": "truthfulness",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-truthfulness",
+      "pair_selection": "all",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8, 0.9]
+    },
+    "truthfulness_2048": {
+      "second_objective": "truthfulness",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-truthfulness",
+      "pair_selection": "all",
+      "max_length": 2048,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.6, 0.8]
+    },
+    "instruction_following_joint_512": {
+      "second_objective": "instruction_following",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-instruction_following-clean-gap0-joint-with-helpfulness-gap0",
+      "pair_selection": "joint",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    },
+    "instruction_following_non_conflict_512": {
+      "second_objective": "instruction_following",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-instruction_following-clean-gap0-agreement-with-helpfulness-gap0",
+      "pair_selection": "non_conflict",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    },
+    "instruction_following_conflict_512": {
+      "second_objective": "instruction_following",
+      "second_objective_score_direction": "higher",
+      "margin_dataset_view": "OpenBMB/UltraFeedback-instruction_following-clean-gap0-conflict-with-helpfulness-gap0",
+      "pair_selection": "conflict",
+      "max_length": 512,
+      "margin_beta": 0.1,
+      "weights": [0.1, 0.2, 0.4, 0.8]
+    }
+  }
+}

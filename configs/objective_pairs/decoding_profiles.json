@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "primary": {
+      "do_sample": false,
+      "repetition_penalty": 1.0,
+      "no_repeat_ngram_size": 0
+    },
+    "robustness_2048": {
+      "do_sample": false,
+      "repetition_penalty": 1.1,
+      "no_repeat_ngram_size": 4
+    }
+  }
+}

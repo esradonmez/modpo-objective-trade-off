@@ -1,0 +1,16 @@
+{
+  "manifest_schema_version": 1,
+  "dataset_name": "OpenBMB/UltraFeedback-helpfulness",
+  "dataset_revision": "40b436560ca83a8dba36114c22ab3c66e43f6d5e",
+  "source_split": "validation",
+  "expected_source_split_rows": 28900,
+  "selection_rule": "first_400_after_exact_raw_prompt_deduplication_keep_first",
+  "expected_selected_rows": 400,
+  "expected_unique_raw_prompts": 400,
+  "prompt_template_id": "modpo_human_assistant_v1",
+  "hash_algorithm": "sha256",
+  "digest_canonicalization": "utf8(value) prefixed by unsigned 8-byte big-endian byte length, concatenated in order",
+  "ordered_raw_prompt_sha256": "85b47d99f0bd9a7f451b499fbe02e0b16e5c1a3e78f59e14368362b3b8bf56ba",
+  "source_row_identifier": "zero-based row index in the pinned source split before deduplication, written as an unpadded base-10 integer",
+  "ordered_source_row_identifier_sha256": "1ab232d15f1ef2b82daa0759ef0b9e4d70238b8f48fac04e126faaac36a6152f"
+}

@@ -1,0 +1,16 @@
+{
+  "manifest_schema_version": 1,
+  "dataset_name": "nvidia/HelpSteer",
+  "dataset_revision": "3ca5d59c1bc1080af195b4254e7407db60b6f450",
+  "source_split": "validation",
+  "expected_source_split_rows": 1789,
+  "selection_rule": "first_400_after_exact_raw_prompt_deduplication_keep_first",
+  "expected_selected_rows": 400,
+  "expected_unique_raw_prompts": 400,
+  "prompt_template_id": "modpo_human_assistant_v1",
+  "hash_algorithm": "sha256",
+  "digest_canonicalization": "utf8(value) prefixed by unsigned 8-byte big-endian byte length, concatenated in order",
+  "ordered_raw_prompt_sha256": "0133c26477d56c87f595923d75e43f6d67af56191d2cb2dec3c56934d482f28a",
+  "source_row_identifier": "zero-based row index in the pinned source split before deduplication, written as an unpadded base-10 integer",
+  "ordered_source_row_identifier_sha256": "7d5e64ed03638c5cd5a8b9a36e4d415538e7721ff911e3acb3d86e1239144d47"
+}
